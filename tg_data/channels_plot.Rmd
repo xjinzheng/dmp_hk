@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r}
-setwd("~/Documents/Github/decentralizedcommplatform/tg_data")
+setwd("~/Documents/Github/dmp_hk/tg_data")
 
 library(lubridate)
 library(ggplot2)
