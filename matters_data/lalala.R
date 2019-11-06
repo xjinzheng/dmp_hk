@@ -1,4 +1,4 @@
-setwd("~/Desktop/Research/tech&protest/matters_data")
+setwd("~/Documents/Github/dmp_hk/matters_data")
 Sys.setlocale(category = 'LC_ALL','en_US.UTF-8')
 
 library(quanteda)
@@ -28,7 +28,7 @@ summary(out$meta$MAT)
 out$meta$date <- as.Date(out$meta$createdAt, format="%Y-%m-%d")
 hist(out$meta$date, breaks="month")
 out$meta$MAT <- out$meta$MAT>0
-stm.out = stm(out$documents, out$vocab, K=20, 
+stm.out = stm(out$documents, out$vocab, K=30, 
               prevalence = ~ MAT + s(date), 
               data=out$meta, init.type="Spectral")
 
@@ -46,13 +46,13 @@ plot.STM(stm.out, n=10, family = 'Heiti TC Medium')
 
 findThoughts(stm.out, out$meta$seg_words, topics=6, n=10)
 findThoughts(stm.out, out$meta$seg_words, topics=3, n=10)
-findThoughts(stm.out, out$meta$seg_words, topics=17, n=10)
+findThoughts(stm.out, out$meta$seg_words, topics=23, n=10)
 findThoughts(stm.out, out$meta$seg_words, topics=18, n=10)
 
 
 out$meta$date <- as.numeric(out$meta$date)
 out$meta$MAT <- as.numeric(out$meta$MAT)
-prep <- estimateEffect(c(1:10) ~ MAT + s(date), stm.out, out$meta)
+prep <- estimateEffect(c(1:30) ~ MAT + s(date), stm.out, out$meta)
 plot.estimateEffect(prep, covariate = "MAT", 
                     method="difference", cov.value1=1, cov.value2=0)
 findThoughts(stm.out, out$meta$seg_words, topics=18, n=10)
@@ -63,7 +63,7 @@ findThoughts(stm.out, out$meta$seg_words, topics=16, n=10)
 plot.estimateEffect(prep, covariate = "date", 
                     method="continuous", topic=3)
 plot.estimateEffect(prep, covariate = 'date',
-                    method= "continuous", topics=16)
+                    method= "continuous", topics=23)
 
 labelTopics(stm.out, c(5,8))
 mod.out.corr <- topicCorr(stm.out)
