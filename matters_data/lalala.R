@@ -27,7 +27,11 @@ out <- convert(doc.features, to = "stm", docvars = data)
 summary(out$meta$MAT)
 out$meta$date <- as.Date(out$meta$createdAt, format="%Y-%m-%d")
 hist(out$meta$date, breaks="month")
-out$meta$MAT <- out$meta$MAT>0
+
+
+out$meta$date <- as.numeric(out$meta$date)
+out$meta$MAT <- as.numeric(out$meta$MAT)
+
 stm.out = stm(out$documents, out$vocab, K=30, 
               prevalence = ~ MAT + s(date), 
               data=out$meta, init.type="Spectral")
@@ -44,24 +48,45 @@ font_add("Heiti TC Medium", regular='/System/Library/Fonts/STHeiti Medium.ttc')
 plot.STM(stm.out, n=10, family = 'Heiti TC Medium')
 
 
-findThoughts(stm.out, out$meta$seg_words, topics=6, n=10)
-findThoughts(stm.out, out$meta$seg_words, topics=3, n=10)
-findThoughts(stm.out, out$meta$seg_words, topics=23, n=10)
+thoughts9 <- findThoughts(stm.out, out$meta$seg_words, topics=9, n=10)$docs[[1]]
+thoughts3 <- findThoughts(stm.out, out$meta$seg_words, topics=3, n=10)$docs[[1]]
+thoughts10 <- findThoughts(stm.out, out$meta$seg_words, topics=10, n=10)$docs[[1]]
 findThoughts(stm.out, out$meta$seg_words, topics=18, n=10)
 
+par(mfrow = c(1, 2), mar = c(1, 1, 2, 1))
+par(family = 'Heiti TC Medium')
+plotQuote(thoughts3, width = 40, main = "Topic 3")
+#plotQuote(thoughts9, width = 30, main = "Topic 9")
+plotQuote(thoughts10, width = 40, main = "Topic 10")
 
-out$meta$date <- as.numeric(out$meta$date)
-out$meta$MAT <- as.numeric(out$meta$MAT)
-prep <- estimateEffect(c(1:30) ~ MAT + s(date), stm.out, out$meta)
-plot.estimateEffect(prep, covariate = "MAT", 
+
+
+# estimate effect
+#out$meta$date <- as.numeric(out$meta$date)
+##out$meta$MAT <- as.factor(out$meta$MAT)
+prep <- estimateEffect(c(1:30) ~ MAT + s(date), stm.out, metadata = out$meta)
+plot.estimateEffect(prep, covariate = "MAT", xlim = c(-.1, .1),
                     method="difference", cov.value1=1, cov.value2=0)
 findThoughts(stm.out, out$meta$seg_words, topics=18, n=10)
 findThoughts(stm.out, out$meta$seg_words, topics=20, n=10)
 findThoughts(stm.out, out$meta$seg_words, topics=3, n=10)
 findThoughts(stm.out, out$meta$seg_words, topics=16, n=10)
 
-plot.estimateEffect(prep, covariate = "date", 
-                    method="continuous", topic=3)
+
+plot(prep, covariate = "date", method="continuous", model = z, topic=3, xaxt = "n", xlab = "Time")
+monthseq <- seq(from=as.Date("2017-12-01"), to=as.Date("2019-10-01"), by = "3 month")
+monthnames <- months(monthseq)
+l <- c(17500, 17600, 17700, 17800, 17900, 18000, 18100, 18200)
+axis(1, at=l, labels=monthnames)
+
+
+plot(prep, covariate = "date", method="continuous", model = z, topic=10, xaxt = "n", xlab = "Time")
+monthseq <- seq(from=as.Date("2017-12-01"), to=as.Date("2019-10-01"), by = "3 month")
+monthnames <- months(monthseq)
+l <- c(17500, 17600, 17700, 17800, 17900, 18000, 18100, 18200)
+axis(1, at=l, labels=monthnames)
+
+
 plot.estimateEffect(prep, covariate = 'date',
                     method= "continuous", topics=23)
 
@@ -76,6 +101,7 @@ dataSelect <- selectModel(out$documents, out$vocab, K = 10,
                           data=out$meta, runs = 10, seed = 1234)
 
 plotModels(dataSelect, pch=c(1,2,3,4), legend.position="bottomright")
+selectedmodel <- dataSelect$runout[[1]]
 
 
 # kmeans
