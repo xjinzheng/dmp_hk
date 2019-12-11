@@ -9,7 +9,11 @@ Decentralized Technology, Media, Social Engagement, Security, Hong Kong
 
 ### Instant Messaging
 
+_Telegram_ had a surge of user downloads in Hong Kong as the extradition bill evoked societal conflicts and turbulence. The “Channels” on Telegram were usurped as information sources for people to spread, exchange and even vote about details of “when and where to do what”, as well as to request for emergency assistance and supplies.
+
 ### Content Sharing
+
+Start-up _Matters Lab_ has created an free and sustainable online blogging community to promote personal expression and content sharing. Finding a balance between quality and quantity, it highlights the social agenda.
 
 
 ## Data Ethics
